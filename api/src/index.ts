@@ -1,0 +1,9 @@
+import "./functions/ping";
+import "./functions/login";
+import "./functions/getDay";
+import "./functions/putDay";
+import "./functions/addWater";
+import "./functions/getDaysRange";
+import "./functions/getTeam";
+import "./functions/getSettings";
+import "./functions/putSettings";

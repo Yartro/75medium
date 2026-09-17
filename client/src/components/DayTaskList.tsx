@@ -1,0 +1,60 @@
+import type { DayResponse, DayLog } from "../api/types";
+import { BOOLEAN_TASK_IDS } from "../lib/tasks";
+import { DietTaskItem } from "./DietTaskItem";
+import { TaskItem } from "./TaskItem";
+import { WaterWidget } from "./WaterWidget";
+
+interface DayTaskListProps {
+  day: DayResponse;
+  onTogglePatch: (patch: Partial<DayLog>) => void;
+  onAddWater: (deltaMl: number) => void;
+  disabled?: boolean;
+}
+
+export function DayTaskList({ day, onTogglePatch, onAddWater, disabled }: DayTaskListProps) {
+  return (
+    <div className="day-task-list">
+      <WaterWidget
+        label={day.taskLabels.water}
+        waterMl={day.log.waterMl}
+        waterGoalMl={day.waterGoalMl}
+        onAddWater={onAddWater}
+        disabled={disabled}
+      />
+      {BOOLEAN_TASK_IDS.map((taskId) => {
+        if (taskId === "diet") {
+          return (
+            <DietTaskItem
+              key={taskId}
+              label={day.taskLabels.diet}
+              log={day.log}
+              cheatAvailable={day.cheatAvailable}
+              onToggleDone={() => onTogglePatch({ dietDone: !day.log.dietDone })}
+              onUseCheat={() => onTogglePatch({ dietCheatUsed: true })}
+              disabled={disabled}
+            />
+          );
+        }
+        const doneKey =
+          taskId === "workout"
+            ? "workoutDone"
+            : taskId === "reading"
+              ? "readingOrPodcastDone"
+              : taskId === "meditate"
+                ? "meditateDone"
+                : "noAlcoholDone";
+        const checked = day.log[doneKey as keyof DayLog] as boolean;
+        return (
+          <TaskItem
+            key={taskId}
+            taskId={taskId}
+            label={day.taskLabels[taskId]}
+            checked={checked}
+            onToggle={() => onTogglePatch({ [doneKey]: !checked })}
+            disabled={disabled}
+          />
+        );
+      })}
+    </div>
+  );
+}

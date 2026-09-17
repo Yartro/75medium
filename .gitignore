@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.azurite/
+.azurite-test/
+api/local.settings.json
+api/bin/
+api/obj/
+.vscode/
+.cursor/
+.claude/
+*.log
+*.tsbuildinfo
+hook.cache.json
+.impeccable/config.local.json
+.DS_Store

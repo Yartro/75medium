@@ -1,0 +1,21 @@
+{
+  "name": "75-challenge-app",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "client",
+    "api"
+  ],
+  "scripts": {
+    "dev": "concurrently -n azurite,api,client -c blue,green,magenta \"npm:dev:azurite\" \"npm:dev:api\" \"npm:dev:client\"",
+    "dev:azurite": "azurite --silent --location .azurite",
+    "dev:api": "npm run start --workspace=api",
+    "dev:client": "npm run dev --workspace=client",
+    "build": "npm run build --workspace=client && npm run build --workspace=api",
+    "test": "npm run test --workspace=api"
+  },
+  "devDependencies": {
+    "azurite": "^3.37.0",
+    "concurrently": "^10.0.5"
+  }
+}

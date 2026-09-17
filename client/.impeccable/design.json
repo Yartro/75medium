@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-17T00:00:00Z",
+  "title": "Design System: 75 Medium",
+  "extensions": {
+    "colorMeta": {
+      "amber": { "role": "primary", "displayName": "Signal Amber", "canonical": "#e8a33d" },
+      "brick": { "role": "secondary", "displayName": "Warning Brick", "canonical": "#b5533f" },
+      "board": { "role": "neutral", "displayName": "Board Charcoal", "canonical": "#1c1c1c" },
+      "board-2": { "role": "neutral", "displayName": "Panel Charcoal", "canonical": "#242424" },
+      "board-3": { "role": "neutral", "displayName": "Recessed Charcoal", "canonical": "#2b2b2b" },
+      "steel": { "role": "neutral", "displayName": "Chassis Steel", "canonical": "#3a3d3f" },
+      "border-steel": { "role": "neutral", "displayName": "Steel Hairline", "canonical": "#46494b" },
+      "rivet": { "role": "neutral", "displayName": "Rivet", "canonical": "#5c5f61" },
+      "flap": { "role": "neutral", "displayName": "Flap Ivory", "canonical": "#eee7d8" },
+      "flap-ink": { "role": "neutral", "displayName": "Flap Ink", "canonical": "#1a1a18" },
+      "flap-muted": { "role": "neutral", "displayName": "Muted Flap", "canonical": "#d8d0bd" },
+      "text-muted": { "role": "neutral", "displayName": "Muted Ivory", "canonical": "#9c968a" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display / Numerals", "purpose": "Day-count digit bank, login wordmark numerals, section titles." },
+      "body": { "displayName": "Body", "purpose": "Task labels and form content requiring sustained legibility." }
+    },
+    "shadows": [
+      { "name": "flap-lip", "value": "0 1px 0 rgba(255,255,255,.25) inset, 0 2px 0 rgba(0,0,0,.4), 0 5px 8px rgba(0,0,0,.3)", "purpose": "Every flap card, in every state — the only elevated surface in the system." },
+      { "name": "steel-bevel", "value": "inset 0 1px 0 rgba(255,255,255,.08), inset 0 -1px 0 rgba(0,0,0,.3), 0 2px 6px rgba(0,0,0,.35)", "purpose": "Header and bottom-nav chassis." }
+    ],
+    "motion": [
+      { "name": "flap-flip", "value": "spring(stiffness: 480, damping: 16) on rotateX from -100deg to 0, transform-origin top", "purpose": "The signature interaction: a task flap dropping into its done state, with a small mechanical overshoot." }
+    ],
+    "breakpoints": [
+      { "name": "shell-cap", "value": "480px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Flap (blank)",
+      "kind": "custom",
+      "refersTo": "flap-blank",
+      "description": "The base state of the signature flap primitive — an undone task, an unfilled water segment, a future day.",
+      "html": "<div class=\"ds-flap ds-flap--md\"></div>",
+      "css": ".ds-flap { position: relative; display: flex; align-items: center; justify-content: center; background: #eee7d8; color: #1a1a18; border-radius: 5px; font-family: 'Oswald', sans-serif; font-variant-numeric: tabular-nums; box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 2px 0 rgba(0,0,0,.4), 0 5px 8px rgba(0,0,0,.3); overflow: hidden; } .ds-flap::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,.28); } .ds-flap--md { width: 44px; height: 44px; font-size: 18px; font-weight: 700; }"
+    },
+    {
+      "name": "Flap (done)",
+      "kind": "custom",
+      "refersTo": "flap-done",
+      "description": "A completed task or achieved day — the system's only 'positive' color.",
+      "html": "<button class=\"ds-flap ds-flap--md ds-flap--done\">&#10003;</button>",
+      "css": ".ds-flap--done { background: #e8a33d; color: #241a08; border: none; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single call-to-action style — solid amber, no gradient.",
+      "html": "<button class=\"ds-btn-primary\">INLOGGEN</button>",
+      "css": ".ds-btn-primary { background: #e8a33d; color: #241a08; border: 1px solid #e8a33d; border-radius: 9px; padding: 13px 16px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; } .ds-btn-primary:hover { filter: brightness(1.05); } .ds-btn-primary:focus-visible { outline: 2px solid #e8a33d; outline-offset: 2px; }"
+    },
+    {
+      "name": "Flap Row",
+      "kind": "custom",
+      "refersTo": "flap-row",
+      "description": "A steel-plate task row with an icon chip, label, and a trailing Flap as the tap target.",
+      "html": "<button class=\"ds-flap-row\"><span class=\"ds-flap-row__icon\">&#128167;</span><span class=\"ds-flap-row__label\">Water drinken</span><span class=\"ds-flap ds-flap--sm\"></span></button>",
+      "css": ".ds-flap-row { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 12px; background: #242424; border: 1px solid #46494b; color: #eee7d8; width: 100%; } .ds-flap-row__icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #3a3d3f; border: 1px solid #46494b; } .ds-flap-row__label { flex: 1; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "field-input",
+      "description": "A steel-recessed text input with a tracked uppercase label above it.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field__label\">Gewicht (kg)</span><input class=\"ds-field__input\" type=\"number\" value=\"75\" /></label>",
+      "css": ".ds-field__label { display: block; font-family: 'Oswald', sans-serif; font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #9c968a; margin-bottom: 6px; } .ds-field__input { padding: 12px; border-radius: 7px; border: 1px solid #46494b; background: #2b2b2b; color: #eee7d8; font-family: 'Inter', sans-serif; font-size: 14.5px; caret-color: #e8a33d; } .ds-field__input:focus-visible { outline: 2px solid #e8a33d; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Split-Flap Status Board",
+    "overview": "75 Medium reads like the departure board at a gym or a train station: every day's status is a physical flap that flips into place, never a value that silently changes underneath you. That mechanism is not decoration — it is the honest expression of how the product actually works: challenge day, streak, and status are recomputed fresh from the log history on every load, so nothing here is a stored counter pretending to be a fact. The board flips because the truth flipped. The system replaces the incumbent look — a near-black gradient dashboard with glass cards, neon per-task colors, and gradient-clipped text — with a flat, mechanical, industrial world: charcoal board, ivory die-cut flap cards, brushed-steel chassis, one warm amber accent for \"done,\" and brick red for \"missed.\" Nothing glows, blurs, or gradates. Icons are drawn, not borrowed from emoji.",
+    "keyCharacteristics": [
+      "Every stateful value renders as a physical flap card, not a colored badge or icon.",
+      "One accent color (amber) means 'done.' A second (brick) means 'missed.' Nothing else competes for that role.",
+      "Flat steel and board surfaces at rest; only flap cards carry a raised, mechanical drop-shadow.",
+      "Tabular numerals everywhere a count appears, so digits never jitter.",
+      "No gradients, no glass/blur, no neon, no emoji-as-icon, no leaderboard ranking of teammates."
+    ],
+    "rules": [
+      { "name": "The One Flip Rule", "body": "A value only ever has three visual states — blank (ivory), done (amber), or missed (brick). No fourth color is ever introduced for state.", "section": "colors" },
+      { "name": "The Tabular Rule", "body": "Anywhere a number can change, font-variant-numeric: tabular-nums is mandatory so digits never shift the surrounding layout.", "section": "typography" },
+      { "name": "The Flat-Chassis Rule", "body": "Steel and board surfaces never cast a shadow of their own; only flap cards do.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do render every stateful value as a Flap, never as a colored badge, dot, or emoji.",
+      "Do keep amber exclusively for 'done' and brick exclusively for 'missed'.",
+      "Do apply tabular numerals to every numeric readout.",
+      "Do let a past day's row open already editable from wherever it's tapped.",
+      "Do keep teammates unranked and individually named on the Team screen."
+    ],
+    "donts": [
+      "Don't use a gradient anywhere.",
+      "Don't use glass, blur, or a soft neon glow.",
+      "Don't use a Unicode emoji as a functional icon.",
+      "Don't introduce a fourth semantic state color.",
+      "Don't widen the app shell past 480px on large screens."
+    ]
+  }
+}

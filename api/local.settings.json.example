@@ -1,0 +1,12 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "TABLES_CONNECTION_STRING": "UseDevelopmentStorage=true",
+    "AUTH_SECRET": "local-dev-only-secret-change-me"
+  },
+  "Host": {
+    "CORS": "*"
+  }
+}

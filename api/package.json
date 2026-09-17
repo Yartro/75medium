@@ -1,0 +1,22 @@
+{
+  "name": "api",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "watch": "tsc -p tsconfig.build.json -w",
+    "prestart": "npm run build",
+    "start": "func start",
+    "test": "vitest run"
+  },
+  "main": "dist/src/index.js",
+  "dependencies": {
+    "@azure/data-tables": "^13.3.2",
+    "@azure/functions": "^4.16.5"
+  },
+  "devDependencies": {
+    "azure-functions-core-tools": "^4.14.0",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.1"
+  }
+}
