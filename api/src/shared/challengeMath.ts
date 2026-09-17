@@ -7,16 +7,23 @@ export function resolveWaterGoalMl(settings: Settings): number {
   return Math.round(settings.weightKg * 33);
 }
 
+/**
+ * `previousLog` (the day right before `log`) lets an extra 45min workout
+ * logged that prior day satisfy today's workout requirement instead - a
+ * one-day-ahead bank, never an open-ended carry-over.
+ */
 export function isDayAchieved(
   log: DailyLogEntity | undefined,
-  settings: Settings
+  settings: Settings,
+  previousLog?: DailyLogEntity
 ): boolean {
   if (!log) return false;
   const waterGoal = resolveWaterGoalMl(settings);
   const dietOk = log.dietDone === true || log.dietCheatUsed === true;
+  const workoutOk = log.workoutDone === true || previousLog?.workoutExtraDone === true;
   return (
     log.waterMl >= waterGoal &&
-    log.workoutDone === true &&
+    workoutOk &&
     log.readingOrPodcastDone === true &&
     dietOk &&
     log.meditateDone === true &&
@@ -53,7 +60,7 @@ export function computeChallengeStatus(
   let achievedDaysCount = 0;
 
   for (let d = startDate; d <= yesterday; d = addDays(d, 1)) {
-    if (isDayAchieved(logsByDate.get(d), settings)) {
+    if (isDayAchieved(logsByDate.get(d), settings, logsByDate.get(addDays(d, -1)))) {
       achievedDaysCount++;
     } else {
       missedDaysCount++;
@@ -63,7 +70,7 @@ export function computeChallengeStatus(
   const totalRequiredDays = CHALLENGE_BASE_DAYS + missedDaysCount;
   const endDate = addDays(startDate, totalRequiredDays - 1);
   const dayNumber = diffDays(today, startDate) + 1;
-  const todayAchieved = isDayAchieved(logsByDate.get(today), settings);
+  const todayAchieved = isDayAchieved(logsByDate.get(today), settings, logsByDate.get(yesterday));
 
   return {
     status: today > endDate ? "complete" : "active",

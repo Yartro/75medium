@@ -21,14 +21,20 @@ app.http("getTeam", {
     const members: TeamMemberSummary[] = await Promise.all(
       USERS.map(async (user) => {
         const settings = await getSettings(user.id);
-        const from = settings.startDate < recentStart ? settings.startDate : recentStart;
+        const dayBeforeRecentStart = addDays(recentStart, -1);
+        let from = settings.startDate < recentStart ? settings.startDate : recentStart;
+        if (dayBeforeRecentStart < from) from = dayBeforeRecentStart;
         const logsByDate = await getLogsMapInRange(user.id, from, today);
         const challenge = computeChallengeStatus(settings.startDate, today, logsByDate, settings);
 
         const recentDays: { date: string; achieved: boolean; isToday: boolean }[] = [];
         for (let d = recentStart; d <= today; d = addDays(d, 1)) {
           if (d < settings.startDate) continue;
-          recentDays.push({ date: d, achieved: isDayAchieved(logsByDate.get(d), settings), isToday: d === today });
+          recentDays.push({
+            date: d,
+            achieved: isDayAchieved(logsByDate.get(d), settings, logsByDate.get(addDays(d, -1))),
+            isToday: d === today,
+          });
         }
 
         return {

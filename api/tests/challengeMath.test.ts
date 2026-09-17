@@ -29,6 +29,7 @@ function achievedLog(date: string): DailyLogEntity {
     rowKey: date,
     waterMl: 2640, // 80kg * 33
     workoutDone: true,
+    workoutExtraDone: false,
     readingOrPodcastDone: true,
     dietDone: true,
     dietCheatUsed: false,
@@ -70,6 +71,18 @@ describe("isDayAchieved", () => {
   it("requires water to reach the goal, not just be logged", () => {
     const log = { ...achievedLog("2026-01-05"), waterMl: 1000 };
     expect(isDayAchieved(log, baseSettings)).toBe(false);
+  });
+
+  it("lets an extra workout logged the day before cover today's workout", () => {
+    const today = { ...achievedLog("2026-01-06"), workoutDone: false };
+    const yesterday = { ...achievedLog("2026-01-05"), workoutExtraDone: true };
+    expect(isDayAchieved(today, baseSettings, yesterday)).toBe(true);
+  });
+
+  it("still requires today's own workout when yesterday had no extra", () => {
+    const today = { ...achievedLog("2026-01-06"), workoutDone: false };
+    const yesterday = achievedLog("2026-01-05");
+    expect(isDayAchieved(today, baseSettings, yesterday)).toBe(false);
   });
 });
 
@@ -158,6 +171,37 @@ describe("computeChallengeStatus", () => {
     const after = computeChallengeStatus(startDate, today, logs, baseSettings);
     expect(after.missedDaysCount).toBe(9);
     expect(after.totalRequiredDays).toBe(84);
+  });
+
+  it("does not count a day as missed when yesterday's extra workout covers it", () => {
+    const startDate = "2026-01-01";
+    const today = "2026-01-11";
+    const logs = new Map<string, DailyLogEntity>();
+    for (let d = startDate; d < today; d = addDays(d, 1)) logs.set(d, achievedLog(d));
+
+    // 2026-01-05 skips its own workout but banked an extra the day before.
+    logs.set("2026-01-04", { ...achievedLog("2026-01-04"), workoutExtraDone: true });
+    logs.set("2026-01-05", { ...achievedLog("2026-01-05"), workoutDone: false });
+
+    const status = computeChallengeStatus(startDate, today, logs, baseSettings);
+    expect(status.missedDaysCount).toBe(0);
+    expect(status.achievedDaysCount).toBe(10);
+  });
+
+  it("does not let a banked extra reach past the very next day", () => {
+    const startDate = "2026-01-01";
+    const today = "2026-01-11";
+    const logs = new Map<string, DailyLogEntity>();
+    for (let d = startDate; d < today; d = addDays(d, 1)) logs.set(d, achievedLog(d));
+
+    // Banked on 01-04, but 01-05 does its own workout; 01-06 skips relying on
+    // the (already two days stale) bank, which must not cover it.
+    logs.set("2026-01-04", { ...achievedLog("2026-01-04"), workoutExtraDone: true });
+    logs.set("2026-01-06", { ...achievedLog("2026-01-06"), workoutDone: false });
+
+    const status = computeChallengeStatus(startDate, today, logs, baseSettings);
+    expect(status.missedDaysCount).toBe(1);
+    expect(status.achievedDaysCount).toBe(9);
   });
 
   it("flips to complete once today is past the (possibly extended) end date", () => {

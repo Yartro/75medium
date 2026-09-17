@@ -13,6 +13,7 @@ export interface ChallengeStatus {
 export interface DayLog {
   waterMl: number;
   workoutDone: boolean;
+  workoutExtraDone: boolean;
   readingOrPodcastDone: boolean;
   dietDone: boolean;
   dietCheatUsed: boolean;
@@ -24,6 +25,7 @@ export interface DayResponse {
   date: string;
   log: DayLog;
   achieved: boolean;
+  workoutCoveredByYesterday: boolean;
   waterGoalMl: number;
   cheatAvailable: boolean;
   taskLabels: Record<TaskId, string>;

@@ -3,6 +3,7 @@ import { BOOLEAN_TASK_IDS } from "../lib/tasks";
 import { DietTaskItem } from "./DietTaskItem";
 import { TaskItem } from "./TaskItem";
 import { WaterWidget } from "./WaterWidget";
+import { WorkoutTaskItem } from "./WorkoutTaskItem";
 
 interface DayTaskListProps {
   day: DayResponse;
@@ -35,14 +36,25 @@ export function DayTaskList({ day, onTogglePatch, onAddWater, disabled }: DayTas
             />
           );
         }
+        if (taskId === "workout") {
+          return (
+            <WorkoutTaskItem
+              key={taskId}
+              label={day.taskLabels.workout}
+              log={day.log}
+              coveredByYesterday={day.workoutCoveredByYesterday}
+              onToggleDone={() => onTogglePatch({ workoutDone: !day.log.workoutDone })}
+              onToggleExtra={() => onTogglePatch({ workoutExtraDone: !day.log.workoutExtraDone })}
+              disabled={disabled}
+            />
+          );
+        }
         const doneKey =
-          taskId === "workout"
-            ? "workoutDone"
-            : taskId === "reading"
-              ? "readingOrPodcastDone"
-              : taskId === "meditate"
-                ? "meditateDone"
-                : "noAlcoholDone";
+          taskId === "reading"
+            ? "readingOrPodcastDone"
+            : taskId === "meditate"
+              ? "meditateDone"
+              : "noAlcoholDone";
         const checked = day.log[doneKey as keyof DayLog] as boolean;
         return (
           <TaskItem

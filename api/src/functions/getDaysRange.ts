@@ -22,7 +22,9 @@ app.http("getDaysRange", {
 
     const settings = await getSettings(userId);
     const today = getTodayISO();
-    const challengeFrom = settings.startDate < from ? settings.startDate : from;
+    const dayBeforeFrom = addDays(from, -1);
+    let challengeFrom = settings.startDate < from ? settings.startDate : from;
+    if (dayBeforeFrom < challengeFrom) challengeFrom = dayBeforeFrom;
     const rangeTo = to > today ? to : today;
     const logsByDate = await getLogsMapInRange(userId, challengeFrom, rangeTo);
 
@@ -32,7 +34,7 @@ app.http("getDaysRange", {
     for (let d = from; d <= to; d = addDays(d, 1)) {
       days.push({
         date: d,
-        achieved: isDayAchieved(logsByDate.get(d), settings),
+        achieved: isDayAchieved(logsByDate.get(d), settings, logsByDate.get(addDays(d, -1))),
         hasLog: logsByDate.has(d),
         isToday: d === today,
         isFuture: d > today,

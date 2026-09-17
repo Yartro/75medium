@@ -5,6 +5,9 @@ export interface DailyLogEntity {
   rowKey: string; // date yyyy-MM-dd
   waterMl: number;
   workoutDone: boolean;
+  // An extra 45min workout done THIS day, banking the requirement for the
+  // immediately following day only (see isDayAchieved's previousLog param).
+  workoutExtraDone: boolean;
   readingOrPodcastDone: boolean;
   dietDone: boolean;
   dietCheatUsed: boolean;
@@ -18,6 +21,7 @@ export type DailyLogPatch = Partial<
   Pick<
     DailyLogEntity,
     | "workoutDone"
+    | "workoutExtraDone"
     | "readingOrPodcastDone"
     | "dietDone"
     | "dietCheatUsed"
@@ -61,6 +65,7 @@ export interface DayResponse {
   log: {
     waterMl: number;
     workoutDone: boolean;
+    workoutExtraDone: boolean;
     readingOrPodcastDone: boolean;
     dietDone: boolean;
     dietCheatUsed: boolean;
@@ -68,6 +73,9 @@ export interface DayResponse {
     noAlcoholDone: boolean;
   };
   achieved: boolean;
+  // True when yesterday's workoutExtraDone already satisfies today's workout,
+  // regardless of today's own workoutDone value.
+  workoutCoveredByYesterday: boolean;
   waterGoalMl: number;
   cheatAvailable: boolean;
   taskLabels: Record<TaskId, string>;

@@ -10,6 +10,7 @@ import type { DailyLogPatch } from "../shared/types";
 
 const ALLOWED_KEYS = [
   "workoutDone",
+  "workoutExtraDone",
   "readingOrPodcastDone",
   "dietDone",
   "dietCheatUsed",
