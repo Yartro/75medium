@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import type { HttpRequest } from "@azure/functions";
 import { findUserById } from "./users";
 
@@ -6,6 +6,15 @@ function getSecret(): string {
   const secret = process.env.AUTH_SECRET;
   if (!secret) throw new Error("AUTH_SECRET is not configured");
   return secret;
+}
+
+// TEMP DIAGNOSTIC - remove after the 401 investigation.
+export function debugSecretFingerprint(): string {
+  try {
+    return createHash("sha256").update(getSecret()).digest("hex").slice(0, 8);
+  } catch {
+    return "unset";
+  }
 }
 
 function base64url(input: Buffer | string): string {
@@ -47,6 +56,6 @@ export function requireAuth(request: HttpRequest): string {
   const match = /^Bearer\s+(.+)$/i.exec(header);
   if (!match) throw new UnauthorizedError("Missing bearer token");
   const userId = verifyToken(match[1]);
-  if (!userId) throw new UnauthorizedError("Invalid or expired token");
+  if (!userId) throw new UnauthorizedError(`Invalid or expired token (fp:${debugSecretFingerprint()})`);
   return userId;
 }

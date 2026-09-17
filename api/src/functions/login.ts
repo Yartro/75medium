@@ -1,5 +1,5 @@
 import { app } from "@azure/functions";
-import { issueToken } from "../shared/auth";
+import { debugSecretFingerprint, issueToken } from "../shared/auth";
 import { ValidationError } from "../shared/httpErrors";
 import { json, withErrorHandling } from "../shared/httpHelpers";
 import { findUserByCode } from "../shared/users";
@@ -17,6 +17,7 @@ app.http("login", {
     if (!user) return json(401, { error: "invalid_code" });
 
     const token = issueToken(user.id);
-    return json(200, { token, userId: user.id, name: user.name });
+    // TEMP DIAGNOSTIC - fp field, remove after the 401 investigation.
+    return json(200, { token, userId: user.id, name: user.name, fp: debugSecretFingerprint() });
   }),
 });
