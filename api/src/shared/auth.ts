@@ -54,8 +54,16 @@ export class UnauthorizedError extends Error {}
 export function requireAuth(request: HttpRequest): string {
   const header = request.headers.get("authorization") ?? "";
   const match = /^Bearer\s+(.+)$/i.exec(header);
-  if (!match) throw new UnauthorizedError("Missing bearer token");
+  if (!match) {
+    // TEMP DIAGNOSTIC - remove after the 401 investigation.
+    throw new UnauthorizedError(`Missing bearer token (raw:${JSON.stringify(header)})`);
+  }
   const userId = verifyToken(match[1]);
-  if (!userId) throw new UnauthorizedError(`Invalid or expired token (fp:${debugSecretFingerprint()})`);
+  if (!userId) {
+    // TEMP DIAGNOSTIC - remove after the 401 investigation.
+    throw new UnauthorizedError(
+      `Invalid or expired token (fp:${debugSecretFingerprint()} received:${JSON.stringify(match[1])})`
+    );
+  }
   return userId;
 }
