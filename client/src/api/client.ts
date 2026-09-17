@@ -47,7 +47,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 }
 
 export const api = {
-  login: (code: string) => request<LoginResponse>("POST", "login", { code }),
+  login: (name: string) => request<LoginResponse>("POST", "login", { name }),
   getToday: () => request<DayResponse>("GET", "days/today"),
   getDay: (date: string) => request<DayResponse>("GET", `days/${date}`),
   putDay: (date: string, patch: Partial<DayLog>) => request<DayResponse>("PUT", `days/${date}`, patch),

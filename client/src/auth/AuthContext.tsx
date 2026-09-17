@@ -5,7 +5,7 @@ import { getAuth, setAuth, subscribeAuth, type StoredAuth } from "./tokenStore";
 
 interface AuthContextValue {
   auth: StoredAuth | null;
-  login: (code: string) => Promise<void>;
+  login: (name: string) => Promise<void>;
   logout: () => void;
   loginError: string | null;
   isLoggingIn: boolean;
@@ -22,14 +22,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => subscribeAuth(setAuthState), []);
 
-  const login = async (code: string) => {
+  const login = async (name: string) => {
     setLoginError(null);
     setIsLoggingIn(true);
     try {
-      const result = await api.login(code);
+      const result = await api.login(name);
       setAuth({ token: result.token, userId: result.userId, name: result.name });
     } catch {
-      setLoginError("Onjuiste code. Probeer het opnieuw.");
+      setLoginError("Naam niet herkend. Probeer het opnieuw.");
     } finally {
       setIsLoggingIn(false);
     }

@@ -14,7 +14,7 @@ export type TaskId = (typeof TASK_IDS)[number];
 export const DEFAULT_TASK_LABELS: Record<TaskId, string> = {
   water: "Water drinken",
   workout: "Workout (45 min)",
-  reading: "Lees 10 pagina's of luister 10 minuten selfhelp/podcast",
+  reading: "Lees 10 pagina's of luister 10 minuten naar iets motiverends wat past bij je doel",
   diet: "Volg gezond dieet",
   meditate: "Mediteer 5 minuten",
   noAlcohol: "Geen alcohol",

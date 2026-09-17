@@ -5,14 +5,14 @@ import { FlapDigitBank } from "../components/Flap";
 
 export function LoginPage() {
   const { auth, login, loginError, isLoggingIn } = useAuth();
-  const [code, setCode] = useState("");
+  const [name, setName] = useState("");
 
   if (auth) return <Navigate to="/" replace />;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!code.trim()) return;
-    await login(code.trim());
+    if (!name.trim()) return;
+    await login(name.trim());
   }
 
   return (
@@ -23,7 +23,7 @@ export function LoginPage() {
           <div className="login-plate__word">Medium</div>
         </div>
         <p className="login-page__subtitle" style={{ marginTop: 18 }}>
-          Vul je persoonlijke code in
+          Vul je naam in
         </p>
       </div>
 
@@ -32,14 +32,14 @@ export function LoginPage() {
           type="text"
           inputMode="text"
           autoFocus
-          autoCapitalize="none"
+          autoCapitalize="words"
           autoComplete="off"
-          placeholder="jouwcode123"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
+          placeholder="Ray"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
         {loginError && <span className="login-error">{loginError}</span>}
-        <button type="submit" className="btn primary block" disabled={isLoggingIn || !code.trim()}>
+        <button type="submit" className="btn primary block" disabled={isLoggingIn || !name.trim()}>
           {isLoggingIn ? "Bezig..." : "Inloggen"}
         </button>
       </form>

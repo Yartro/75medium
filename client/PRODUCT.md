@@ -8,7 +8,7 @@ web
 
 ## Users
 
-A closed group of 6 friends (Daan, Jochem, Lieke, Noortje, Ray, Rick) doing the "75 Medium" challenge together. Each logs in with a personal hardcoded access code (not a real account/password system) and uses the app daily, mostly on their phone, to check off that day's tasks and see how the rest of the group is doing. This is permanently private to this one group — not a multi-tenant product and not intended to ever onboard other groups or the public.
+A closed group of 6 friends (Daan, Jochem, Lieke, Noortje, Ray, Rick) doing the "75 Medium" challenge together. Each logs in by typing their own first name (case-insensitive, from a hardcoded roster — not a real account/password system) and uses the app daily, mostly on their phone, to check off that day's tasks and see how the rest of the group is doing. This is permanently private to this one group — not a multi-tenant product and not intended to ever onboard other groups or the public.
 
 ## Product Purpose
 
@@ -28,7 +28,7 @@ Daily, mobile-first use throughout a 75-day challenge period. Core loop: open ap
 - A day counts as "achieved" only if every task is done that day (diet allows a "cheat" flag as an alternate pass) — see `isDayAchieved` in `api/src/shared/challengeMath.ts`.
 - Water goal defaults to weight (kg) × 33 ml, overridable per user; logged in cups of a configurable size.
 - Adding new task types is explicitly not supported yet (deliberate scope cut per README); users can only edit the label text of the existing 6.
-- Auth is 6 hardcoded per-person codes (`api/src/shared/users.ts`), no signup/registration flow, no password reset.
+- Auth is just typing your own first name (case-insensitive, matched against a hardcoded roster of 6 in `api/src/shared/users.ts`), no signup/registration flow, no password reset.
 - Data: Azure Table Storage, two tables (`DailyLogs`, `UserSettings`). Local dev runs Azurite + Azure Functions + Vite concurrently.
 - Deploys as a single Azure Static Web App (client + managed Functions API), free tier.
 

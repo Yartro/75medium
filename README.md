@@ -25,13 +25,13 @@ Dit start gelijktijdig:
 - **Azure Functions host** op `http://localhost:7071`
 - **Vite dev server** op `http://localhost:5173` (proxyt `/api/*` naar de Functions host)
 
-Open `http://localhost:5173` in de browser. Log in met een van de codes uit [`api/src/shared/users.ts`](api/src/shared/users.ts) (standaard bv. `ray123`, `noortje123`, ...).
+Open `http://localhost:5173` in de browser. Log in met je voornaam (niet hoofdlettergevoelig) — de 6 namen staan in [`api/src/shared/users.ts`](api/src/shared/users.ts).
 
 Lokale data staat in `.azurite/` (gitignored) — verwijder die map om met een schone lei te beginnen.
 
-### Codes aanpassen
+### Teamleden aanpassen
 
-De 6 teamleden en hun inlogcodes staan hardcoded in [`api/src/shared/users.ts`](api/src/shared/users.ts). Pas de `code` velden aan voordat de app echt in gebruik gaat.
+De 6 teamleden staan hardcoded in [`api/src/shared/users.ts`](api/src/shared/users.ts) — inloggen is gewoon je naam typen (niet hoofdlettergevoelig), geen aparte code of wachtwoord.
 
 ### Taken en tekst aanpassen
 
@@ -48,9 +48,11 @@ De app is gebouwd om zonder codewijzigingen over te zetten naar echte Azure reso
    - `api_location`: `api`
 
    Azure genereert dan automatisch een GitHub Actions workflow die bij elke push naar main zowel de client bouwt als de API als gekoppelde ("managed") Function App deployt — dus geen aparte Function App resource nodig, en dit valt onder de gratis SWA-laag.
-3. In de Static Web App resource → **Configuration** → **Application settings**, deze twee waarden toevoegen (dit zijn nu placeholders in `api/local.settings.json`, lokaal):
+3. In de Static Web App resource → **Environment variables** (niet de oudere "Configuration"-pagina, die is verhuisd), deze twee waarden toevoegen (dit zijn nu placeholders in `api/local.settings.json`, lokaal):
    - `TABLES_CONNECTION_STRING`: de connection string van de Storage Account uit stap 1
    - `AUTH_SECRET`: een lange willekeurige string (bv. via `openssl rand -hex 32`) — wordt gebruikt om login-tokens te ondertekenen
 4. Opnieuw deployen (of wachten op de eerstvolgende push) — de tabellen (`DailyLogs`, `UserSettings`) worden automatisch aangemaakt bij het eerste gebruik.
 
 [`client/public/staticwebapp.config.json`](client/public/staticwebapp.config.json) regelt de SPA-routing (client-side routes vallen terug op `index.html`, `/api/*` gaat naar de Function App) — het moet binnen `app_location` staan, anders pikt Azure het niet op.
+
+**Let op:** Static Web Apps' managed Functions-proxy overschrijft de standaard `Authorization`-header met een eigen intern service-token voordat het verzoek de API bereikt. Het eigen sessietoken van de app reist daarom via de custom header `x-auth-token` (zie [`api/src/shared/auth.ts`](api/src/shared/auth.ts) en [`client/src/api/client.ts`](client/src/api/client.ts)) — gebruik nooit `Authorization` voor eigen auth op dit platform.
