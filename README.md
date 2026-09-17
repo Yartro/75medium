@@ -53,4 +53,4 @@ De app is gebouwd om zonder codewijzigingen over te zetten naar echte Azure reso
    - `AUTH_SECRET`: een lange willekeurige string (bv. via `openssl rand -hex 32`) — wordt gebruikt om login-tokens te ondertekenen
 4. Opnieuw deployen (of wachten op de eerstvolgende push) — de tabellen (`DailyLogs`, `UserSettings`) worden automatisch aangemaakt bij het eerste gebruik.
 
-`staticwebapp.config.json` in de root regelt de SPA-routing (client-side routes vallen terug op `index.html`, `/api/*` gaat naar de Function App).
+[`client/public/staticwebapp.config.json`](client/public/staticwebapp.config.json) regelt de SPA-routing (client-side routes vallen terug op `index.html`, `/api/*` gaat naar de Function App) — het moet binnen `app_location` staan, anders pikt Azure het niet op.
