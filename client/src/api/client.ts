@@ -18,10 +18,15 @@ export class ApiError extends Error {
   }
 }
 
+// Not "Authorization": Azure Static Web Apps' managed-Functions proxy
+// overwrites that header with its own internal service token before the
+// request reaches the API, so the session token travels separately.
+const AUTH_HEADER = "x-auth-token";
+
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
   const auth = getAuth();
   const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (auth) headers.Authorization = `Bearer ${auth.token}`;
+  if (auth) headers[AUTH_HEADER] = auth.token;
 
   const res = await fetch(`/api/${path}`, {
     method,

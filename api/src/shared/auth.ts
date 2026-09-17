@@ -1,20 +1,17 @@
-import { createHash, createHmac, timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import type { HttpRequest } from "@azure/functions";
 import { findUserById } from "./users";
+
+// Azure Static Web Apps' managed-Functions proxy overwrites the standard
+// "Authorization" header with its own internal SWA-to-Functions service
+// token before the request reaches this code, so the app's own session
+// token travels in a separate header instead.
+export const AUTH_HEADER = "x-auth-token";
 
 function getSecret(): string {
   const secret = process.env.AUTH_SECRET;
   if (!secret) throw new Error("AUTH_SECRET is not configured");
   return secret;
-}
-
-// TEMP DIAGNOSTIC - remove after the 401 investigation.
-export function debugSecretFingerprint(): string {
-  try {
-    return createHash("sha256").update(getSecret()).digest("hex").slice(0, 8);
-  } catch {
-    return "unset";
-  }
 }
 
 function base64url(input: Buffer | string): string {
@@ -52,18 +49,9 @@ export function verifyToken(token: string): string | null {
 export class UnauthorizedError extends Error {}
 
 export function requireAuth(request: HttpRequest): string {
-  const header = request.headers.get("authorization") ?? "";
-  const match = /^Bearer\s+(.+)$/i.exec(header);
-  if (!match) {
-    // TEMP DIAGNOSTIC - remove after the 401 investigation.
-    throw new UnauthorizedError(`Missing bearer token (raw:${JSON.stringify(header)})`);
-  }
-  const userId = verifyToken(match[1]);
-  if (!userId) {
-    // TEMP DIAGNOSTIC - remove after the 401 investigation.
-    throw new UnauthorizedError(
-      `Invalid or expired token (fp:${debugSecretFingerprint()} received:${JSON.stringify(match[1])})`
-    );
-  }
+  const token = request.headers.get(AUTH_HEADER) ?? "";
+  if (!token) throw new UnauthorizedError("Missing auth token");
+  const userId = verifyToken(token);
+  if (!userId) throw new UnauthorizedError("Invalid or expired token");
   return userId;
 }
